@@ -28,7 +28,7 @@ kramdown:
 owner:
   name: Gideon Redelinghuys
   avatar: bio-photo.jpg
-  bio: "Software developer working at Cloudflare. Also used to break things at Amazon EC2."
+  bio: "Software developer working at Cloudflare. Used to break things at Amazon EC2."
   email: gjredelinghuys@gmail.com
   disqus-shortname: 
   twitter: redkidster
@@ -54,6 +54,7 @@ owner:
   soundcloud: #username
   weibo: #username
   flickr: #username
+  bitbucket: gjredelinghuys
 
 include: [".htaccess"]
 exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md"]
