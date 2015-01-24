@@ -1,6 +1,6 @@
 # Site wide configuration
 
-title:            Site Title
+title:            Phone the internets! I've got news!
 locale:           en_US
 url:              
 
@@ -26,23 +26,23 @@ kramdown:
 
 # Site owner
 owner:
-  name: Your Name
+  name: Gideon Redelinghuys
   avatar: bio-photo.jpg
-  bio: "Describe your self."
-  email: 
+  bio: "Software developer working at Cloudflare. Also used to break things at Amazon EC2."
+  email: gjredelinghuys@gmail.com
   disqus-shortname: 
-  twitter: #username
-  facebook: #username
+  twitter: redkidster
+  facebook: gideon.redelinghuys
   google:
-    plus: #username
+    plus: GideonRedelinghuys
     analytics: 
     verify: 
     ad-client: 
     ad-slot: 
   bing-verify: 
-  github: #username
+  github: gideonred
   stackoverflow: #http://stackoverflow.com/users/123456/username
-  linkedin: #username
+  linkedin: gjredelinghuys
   instagram: #username
   lastfm: #username
   tumblr: #username
