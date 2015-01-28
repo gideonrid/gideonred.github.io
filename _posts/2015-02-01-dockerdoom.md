@@ -14,6 +14,8 @@ you only wish that you could be saving earth from a possible invasion from
 hell? Worry no longer! Now you can kill those Docker containers with the
 proper tool, a rocket launcher (or BFG, or shotgun, or whatever)!
 
+<iframe width="420" height="315" src="http://www.youtube.com/embed/E1Lm1NFthX8" frameborder="0" allowfullscreen></iframe>
+
 ## Stop talking, I want to run this now
 
 Download and place this binary on the machine running docker:
@@ -61,5 +63,38 @@ Connect the VNC Viewer to the machine running `dockerdoomd` at port 5900. The pa
 
 <figure>
     <a href="/images/vncdockerdoomd.png"><img src="/images/vncdockerdoomd.png"></a>
-    <figcaption><title="Chicken of the VNC viewer">Connecting Chicken of the VNC viewer to dockerdoomd</a>.</figcaption>
 </figure>
+
+After a few seconds you will see doom appear:
+
+<figure>
+    <a href="/images/vncdockerdoomd2.png"><img src="/images/vncdockerdoomd2.png"></a>
+</figure>
+
+Now if you want to get the job done quickly enter the cheat `idspispopd` and walk through the wall on your right. You should be greated by your docker containers as little pink monsters. Press `CTRL` to fire. If the pistol is not your thing, cheat with `idkfa` and press `5` for a nice surprise. Pause the game with `ESC`. Feel free to startup and shutdown docker containers in the background while the game is running.
+
+## How does this magic work?
+
+<figure>
+    <a href="/images/dockerdoommeme.jpg"><img src="/images/dockerdoommeme.jpg"></a>
+</figure>
+
+There is several parts at play. Let&rsquo;s list them:
+
+* The Docker binary, used to start and query Docker containers.
+* The DOOM Docker container, running DOOM inside of it, called `dockerdoom`.
+* `dockerdoomd`, a daemon that starts the containers, sets everything up and enables the DOOM Docker container to query and stop Docker containers.
+* a socket file, enabling communication between DOOM and `dockerdoomd`
+* a VNC tcp connection, enabling a connection between DOOM&rsquo;s X11 session and whatever computer you want it to be displayed.
+
+The best part of all of this, is that DOOM is running within a container. This allows easier deployment of DOOM to whoever wants to run it. So, not only is this a cool magic trick, but it also uses the awesome features that containers give us.
+
+It&rsquo;ll probably best to explain this by drawing it all out.
+
+<figure>
+    <a href="/images/dockerdoomdiag.png"><img src="/images/dockerdoomdiag.png"></a>
+</figure>
+
+When you start `dockerdoomd` up on your linux host it will try and download the DOOM docker image from the public repo. It will start this image as container `dockerdoom`. After starting the image it will open a unix socket between itself and the `dockerdoom` container. The `dockerdoom` will open an X11 VNC session and wait for connections. When the user first connects to the `dockerdoom` container DOOM will be started. DOOM will then periodically poll the unix socket for info on the running docker containers on the host. `dockerdoomd` will do a `docker ps` execution when it receives a `list` request on the unix socket. DOOM will spawn monsters for every docker container it reads in the response to its `list` request. When you kill a monster in DOOM, DOOM will send a `kill` request to `dockerdoomd` on the unix socket. `dockerdoomd` will then do the corresponding `docker rm`.
+
+You may ask why the need for the `dockerdoomd` daemon and all the unix socket communication. The reason being that a docker container should not be able to talk back to the host&rsquo;s docker setup. The `dockerdoomd` daemon is why of exposing a subset of docker commands to a specified docker container.
