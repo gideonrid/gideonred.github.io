@@ -22,7 +22,7 @@ Download and place this binary on the machine running docker:
 
 <div markdown="0"><a href="#" class="btn btn-info">dockerdoomd</a></div>
 
-Startup a few docker containers e.g.,:
+Start up a few docker containers e.g.,:
 
 {% highlight css %}
 for i in {1..2} ; do docker run -d -t ubuntu:14.04; done
@@ -34,7 +34,7 @@ Now run the downloaded docker binary:
 ./dockerdoomd
 {% endhighlight %}
 
-You should receive output similiar to:
+You should receive output similar to:
 
 {% highlight css %}
 ╭─gideon@localhost  ~
@@ -71,7 +71,9 @@ After a few seconds you will see doom appear:
     <a href="/images/vncdockerdoomd2.png"><img src="/images/vncdockerdoomd2.png"></a>
 </figure>
 
-Now if you want to get the job done quickly enter the cheat `idspispopd` and walk through the wall on your right. You should be greated by your docker containers as little pink monsters. Press `CTRL` to fire. If the pistol is not your thing, cheat with `idkfa` and press `5` for a nice surprise. Pause the game with `ESC`. Feel free to startup and shutdown docker containers in the background while the game is running.
+Now if you want to get the job done quickly enter the cheat `idspispopd` and walk through the wall on your right. You should be greeted by your docker containers as little pink monsters. Press `CTRL` to fire. If the pistol is not your thing, cheat with `idkfa` and press `5` for a nice surprise. Pause the game with `ESC`. Feel free to start up and shutdown docker containers in the background while the game is running.
+
+Sounds familiar? This is based of the work done for psdoom. DOOM was used to kill *nix processes.
 
 ## How does this magic work?
 
@@ -95,6 +97,51 @@ It&rsquo;ll probably best to explain this by drawing it all out.
     <a href="/images/dockerdoomdiag.png"><img src="/images/dockerdoomdiag.png"></a>
 </figure>
 
-When you start `dockerdoomd` up on your linux host it will try and download the DOOM docker image from the public repo. It will start this image as container `dockerdoom`. After starting the image it will open a unix socket between itself and the `dockerdoom` container. The `dockerdoom` will open an X11 VNC session and wait for connections. When the user first connects to the `dockerdoom` container DOOM will be started. DOOM will then periodically poll the unix socket for info on the running docker containers on the host. `dockerdoomd` will do a `docker ps` execution when it receives a `list` request on the unix socket. DOOM will spawn monsters for every docker container it reads in the response to its `list` request. When you kill a monster in DOOM, DOOM will send a `kill` request to `dockerdoomd` on the unix socket. `dockerdoomd` will then do the corresponding `docker rm`.
+When you start `dockerdoomd` up on your Linux host it will try and download the
+DOOM docker image from the public repo. It will start this image as a container
+`dockerdoom`. After starting the image it will open a Unix socket between 
+itself and the `dockerdoom` container. The container will open an X11 VNC 
+session and wait for connections. DOOM will be started when the user first connects to the 
+`dockerdoom` container with VNC. DOOM will then periodically poll
+the Unix socket for info on the running docker containers on the host. 
+`dockerdoomd` will do a `docker ps` execution when it receives a `list` request
+on the Unix socket. DOOM will spawn monsters for every docker container it 
+reads in the response to its `list` request. When you kill a monster in DOOM,
+DOOM will send a `kill` request to `dockerdoomd` on the Unix socket.
+`dockerdoomd` will then do the corresponding `docker rm`.
 
-You may ask why the need for the `dockerdoomd` daemon and all the unix socket communication. The reason being that a docker container should not be able to talk back to the host&rsquo;s docker setup. The `dockerdoomd` daemon is why of exposing a subset of docker commands to a specified docker container.
+You may ask why the need for the `dockerdoomd` daemon and all the Unix socket
+communication. A docker container should not be able to talk back to the 
+host&rsquo;s docker setup. The `dockerdoomd` daemon is a why of exposing a subset
+of docker commands to a specified docker container.
+
+## Food for thought
+
+* Is their value in having a "sudo" Docker container running in real world production environments?
+
+I think so. When maintaining a machine with many containers or VMs you tend to run some control software
+on the original host. An annoyance is that the control software normally doesn&rsquo;t
+use containers or VM&rsquo;s, which means you can&rsquo;t deploy using either.
+Having your control software talk from a container to a host via a well defined API
+can also help maintainers the software by understanding what dependencies need
+to be managed.
+
+* Running X11 or graphical software within docker containers.
+
+I&rsquo;m definitely not the first to do this. It&rsquo;s popular to run Firefox in a container to
+add an extra sand box. I have not packaged or built a game for Linux, but I&rsquo;m sure those
+who do run into problems with dealing with the various distro&rsquo;s and their quirks.
+Containers and streaming technology (naively VNC) gives one possible solution to this problem.
+
+## Links
+
+* [Github repo for the DOOM used here](https://github.com/GideonRed/dockerdoom)
+
+* [Github repo for `dockerdoomd`](https://github.com/GideonRed/dockerdoomd)
+
+## Thanks
+
+Thanks to [orsonteodoro](https://github.com/orsonteodoro) for still keeping psdoom up to date.
+I&rsquo;ve based my changes off of his version.
+
+DOOM and related logos are registered trademarks or trademarks of id Software.
