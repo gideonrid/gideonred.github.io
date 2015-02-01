@@ -20,7 +20,7 @@ proper tool, a rocket launcher (or BFG, or shotgun, or whatever)!
 
 Download and place this binary on the machine running docker:
 
-<div markdown="0"><a href="#" class="btn btn-info">dockerdoomd</a></div>
+<div markdown="0"><a href="/bins/dockerdoomd.tar.gz" class="btn btn-info">dockerdoomd</a></div>
 
 Start up a few docker containers e.g.,:
 
